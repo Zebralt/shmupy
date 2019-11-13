@@ -133,13 +133,11 @@ class MiniApplication:
             print('keydown', event.key, '(%s)' % pygame.key.name(event.key))
             if pygame.key.name(event.key) == 'q':
                 self.state = 0
-                return
 
         if event.type == KEYUP:
             print('keyup', event.key, '(%s)' % pygame.key.name(event.key))
             if pygame.key.name(event.key) == 'q':
                 self.state = 0
-                return
 
         print(event.dict)
 
