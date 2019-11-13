@@ -1,7 +1,7 @@
 import mini
 
 
-class Classy(mini.MiniApplication):
+class Classy(mini.Mini):
 
     def before(self):
         self.drawables = []

@@ -14,8 +14,8 @@ class Color:
 
 class MouseButton:
     LEFT = 1
-    RIGHT = 2
-    ROLL = 3
+    RIGHT = 3
+    ROLL = 2
     ROLL_UP = 4
     ROLL_DOWN = 5
 

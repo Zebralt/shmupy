@@ -7,8 +7,8 @@ from pygame.locals import (
     KEYDOWN, KEYUP
 )
 
-from .mini_settings import MiniSettings
-from .mini_locals import State, Color, MouseButton, ApplicationState
+from .settings import MiniSettings
+from .locals import State, Color, MouseButton, ApplicationState
 
 """
 This is the bare class. To implement a game, you need to modify this class into your application.
@@ -44,6 +44,10 @@ class MiniApplication:
         pass
 
     def before(self):
+        """
+        TO OVERRIDE
+        This is run before at initialization time, after initializing pygame and its resources.
+        """
         ...
 
     # Operations at application start.
@@ -71,6 +75,10 @@ class MiniApplication:
 
     # Operations at application exit.
     def on_close(self):
+        """
+        TO OVERRIDE
+        This is run right before closing the application.
+        """
         pass
 
     def set_settings(self, settings):
@@ -78,48 +86,62 @@ class MiniApplication:
 
     # This method must update the application (data structures, etc.)
     def update(self):
+        """
+        TO OVERRIDE
+        This is run at each application state update.
+        """
         ...
 
     # This method will draw content on the screen.
     def draw(self):
+        """
+        TO OVERRIDE
+        This is called every time to update the window screen.
+        The screen is color filled beforehand (eg reset to black screen)
+        """
         ...
 
-    # Here you will handle events.
-    def handle_event(self, events):
+    def handle_event(self, event):
+        """
+        TO OVERRIDE
+        The event handler. Takes a single event object.
+        """
 
-        for event in events:
+        if 'pos' in event.__dict__:
+            self.settings.mousepos = event.pos
 
-            print(event.dict)
+        if event.type == QUIT:
+            self.state = 0
 
-            if 'pos' in event.__dict__:
-                self.settings.mousepos = event.pos
+        if event.type == MOUSEBUTTONDOWN:
 
-            if event.type == QUIT:
+            if event.button == MouseButton.LEFT:
+                print('mouse down left')
+            elif event.button == MouseButton.RIGHT:
+                print('mouse down right')
+
+        if event.type == MOUSEBUTTONUP:
+            if event.button == MouseButton.LEFT:
+                print('mouse up left')
+            elif event.button == MouseButton.RIGHT:
+                print('mouse up right')
+
+        if event.type == MOUSEMOTION:
+            self.settings.mousepos = event.pos
+
+        if event.type == KEYDOWN:
+            print('keydown', event.key, '(%s)' % pygame.key.name(event.key))
+            if pygame.key.name(event.key) == 'q':
                 self.state = 0
+                return
 
-            if event.type == MOUSEBUTTONDOWN:
+        if event.type == KEYUP:
+            print('keyup', event.key, '(%s)' % pygame.key.name(event.key))
+            if pygame.key.name(event.key) == 'q':
+                self.state = 0
+                return
 
-                if event.button == MouseButton.LEFT:
-                    print('mouse down left')
-
-            if event.type == MOUSEBUTTONUP:
-                if event.button == MouseButton.LEFT:
-                    print('mouse up left')
-
-            if event.type == MOUSEMOTION:
-                self.settings.mousepos = event.pos
-
-            if event.type == KEYDOWN:
-                print('keydown', event.key, '(%s)' % pygame.key.name(event.key))
-                if pygame.key.name(event.key) == 'q':
-                    self.state = 0
-                    return
-
-            if event.type == KEYUP:
-                print('keyup', event.key, '(%s)' % pygame.key.name(event.key))
-                if pygame.key.name(event.key) == 'q':
-                    self.state = 0
-                    return
+        print(event.dict)
 
     def run(self):
 
@@ -128,7 +150,8 @@ class MiniApplication:
 
             pygame.time.Clock().tick(self.settings.refresh_rate)
 
-            self.handle_event(pygame.event.get())
+            for event in pygame.event.get():
+                self.handle_event(event)
 
             self.update()
 
