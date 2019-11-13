@@ -1,6 +1,5 @@
 import pygame
 from pygame.locals import QUIT
-from random import randint
 
 # local imports
 from .mini_settings import MiniSettings
@@ -22,19 +21,19 @@ class MiniEngine:
     def init(self):
 
         self.inited = True
-        
+
         pygame.init()
-        
+
         pygame.key.set_repeat(
             self.settings.key_repeat['delay'],
             self.settings.key_repeat['frequency']
         )
-        
+
         print(self.settings)
         self.window = pygame.display.set_mode(
             (self.settings.resolution.width, self.settings.resolution.height)
         )
-        
+
         pygame.display.flip()
 
     def handle_event(self, events):

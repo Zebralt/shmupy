@@ -1,5 +1,4 @@
-from typing import *
-from random import randint
+from typing import Optional, Union
 
 import pygame
 from pygame.locals import (
@@ -9,10 +8,13 @@ from pygame.locals import (
 )
 
 from .mini_settings import MiniSettings
-from .mini_locals import *
+from .mini_locals import State, Color, MouseButton, ApplicationState
 
-# This is the bare class. To implement a game, you need to modify this class into your application. You also inherit
-# to benefit from the init and close functions.
+"""
+This is the bare class. To implement a game, you need to modify this class into your application.
+You also inherit to benefit from the init and close functions.
+"""
+
 
 class MiniApplication:
 
@@ -23,11 +25,12 @@ class MiniApplication:
     inited: bool
     window: pygame
 
-    def __init__(self,
+    def __init__(
+        self,
         name: Optional[str] = None,
         settings: Optional[Union[str, dict]] = None
     ):
-        
+
         self.state = State.RUNNING
 
         if settings:
@@ -47,21 +50,21 @@ class MiniApplication:
     def init(self):
 
         self.inited = True
-        
+
         pygame.init()
 
         pygame.key.set_repeat(
             self.settings.key_repeat.delay,
             self.settings.key_repeat.frequency
         )
-        
+
         self.window = pygame.display.set_mode(
             (self.settings.resolution.width, self.settings.resolution.height)
         )
 
         if self.name is not None:
             pygame.display.set_caption(self.name)
-        
+
         pygame.display.flip()
 
         self.before()
@@ -95,14 +98,14 @@ class MiniApplication:
                 self.state = 0
 
             if event.type == MOUSEBUTTONDOWN:
-                
+
                 if event.button == MouseButton.LEFT:
                     print('mouse down left')
-            
+
             if event.type == MOUSEBUTTONUP:
                 if event.button == MouseButton.LEFT:
                     print('mouse up left')
-            
+
             if event.type == MOUSEMOTION:
                 self.settings.mousepos = event.pos
 
@@ -118,7 +121,6 @@ class MiniApplication:
                     self.state = 0
                     return
 
-
     def run(self):
 
         # main loop
@@ -129,14 +131,15 @@ class MiniApplication:
             self.handle_event(pygame.event.get())
 
             self.update()
-            
+
             self.window.fill(Color.black)
             self.draw()
-            
+
             pygame.display.flip()
 
         self.on_close()
         return self.state
+
 
 if __name__ == '__main__':
     MiniApplication().run()

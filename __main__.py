@@ -8,7 +8,7 @@ class Classy(mini.MiniApplication):
 
 
 if __name__ == "__main__":
-    
+
     app = Classy(
         name='shmupy',
         settings='settings.yaml'

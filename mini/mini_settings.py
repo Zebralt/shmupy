@@ -1,4 +1,3 @@
-from argparse import Namespace
 from typing import Any
 import yaml
 
@@ -28,7 +27,7 @@ class AttributeDict:
 
     @classmethod
     def allthewaydown(cls, d: dict):
-        
+
         result = AttributeDict()
 
         for key, value in d.items():
@@ -53,7 +52,7 @@ if __name__ == "__main__":
     a.tell = 3
     print(a)
     print(a())
-    
+
     v = {'a': {'b': 3}}
     print(v)
 
@@ -61,20 +60,26 @@ if __name__ == "__main__":
     print(x)
 
     print(x.a, x.a.b)
-    
-    
+
+
 class MiniSettings:
 
     def __init__(self):
         # default settings
-        self.resolution = { 'width' : 800, 'height' : 600 }
+        self.resolution = {
+            'width': 800,
+            'height': 600
+        }
         self.window_rect = (
             self.resolution['width'],
             self.resolution['height']
         )
         self.refresh_rate = 60
-        self.key_repeat = {'delay' : 400, 'frequency' : 30}
-        
+        self.key_repeat = {
+            'delay': 400,
+            'frequency': 30
+        }
+
     @staticmethod
     def load_from_file(filepath: str) -> dict:
         nn = AttributeDict.allthewaydown(yaml.safe_load(open(filepath)))
