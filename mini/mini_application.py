@@ -81,43 +81,49 @@ class MiniApplication:
     def draw(self):
         ...
 
-    # Here you will handle events.
-    def handle_event(self, events):
 
-        for event in events:
+    def base_handle_event(self, event):
 
-            print(event.dict)
-
-            if 'pos' in event.__dict__:
-                self.settings.mousepos = event.pos
-
-            if event.type == QUIT:
+        if event.type == KEYDOWN:
+            print('keydown', event.key, '(%s)' % pygame.key.name(event.key))
+            if pygame.key.name(event.key) == 'q':
                 self.state = 0
+                return
 
-            if event.type == MOUSEBUTTONDOWN:
-                
-                if event.button == MouseButton.LEFT:
-                    print('mouse down left')
+        if 'pos' in event.__dict__:
+            self.settings.mousepos = event.pos
+
+        if event.type == QUIT:
+            self.state = 0
+
+    # Here you will handle events.
+    def handle_event(self, event):
+
+        print(event.dict)
+
+        if event.type == MOUSEBUTTONDOWN:
             
-            if event.type == MOUSEBUTTONUP:
-                if event.button == MouseButton.LEFT:
-                    print('mouse up left')
-            
-            if event.type == MOUSEMOTION:
-                self.settings.mousepos = event.pos
+            if event.button == MouseButton.LEFT:
+                print('mouse down left')
+        
+        if event.type == MOUSEBUTTONUP:
+            if event.button == MouseButton.LEFT:
+                print('mouse up left')
+        
+        if event.type == MOUSEMOTION:
+            self.settings.mousepos = event.pos
 
-            if event.type == KEYDOWN:
-                print('keydown', event.key, '(%s)' % pygame.key.name(event.key))
-                if pygame.key.name(event.key) == 'q':
-                    self.state = 0
-                    return
+        if event.type == KEYDOWN:
+            print('keydown', event.key, '(%s)' % pygame.key.name(event.key))
+            if pygame.key.name(event.key) == 'q':
+                self.state = 0
+                return
 
-            if event.type == KEYUP:
-                print('keyup', event.key, '(%s)' % pygame.key.name(event.key))
-                if pygame.key.name(event.key) == 'q':
-                    self.state = 0
-                    return
-
+        if event.type == KEYUP:
+            print('keyup', event.key, '(%s)' % pygame.key.name(event.key))
+            if pygame.key.name(event.key) == 'q':
+                self.state = 0
+                return
 
     def run(self):
 
@@ -126,7 +132,9 @@ class MiniApplication:
 
             pygame.time.Clock().tick(self.settings.refresh_rate)
 
-            self.handle_event(pygame.event.get())
+            for event in pygame.event.get():
+                self.base_handle_event(event)
+                self.handle_event(event)
 
             self.update()
             
