@@ -1,9 +1,12 @@
-# shmupy
+# Sample pygame application
 
-The goal; make a shmup.
+To launch, do either of those:
 
-That would be, a 2D board where the player controls a small vessel which can move on both axes. While the board does not move, the background does, giving an illusion of ongoing movement from the player's perspective, either vertically (going up) or horizontally (going right).
+```sh
+python .
+make
+```
 
-## Random ideas
+`mini` is a package containing abstractions over pygame.
 
-We could mishmash this with other game genres such as race games (give power ups
+`__main__.py` contains the game implementation deriving from these abstractions.
