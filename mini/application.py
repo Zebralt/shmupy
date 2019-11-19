@@ -104,6 +104,8 @@ class MiniApplication:
 
     def base_handle_event(self, event):
 
+        print(event.dict)
+
         if event.type == KEYDOWN:
             print('keydown', event.key, '(%s)' % pygame.key.name(event.key))
             if pygame.key.name(event.key) == 'q':
