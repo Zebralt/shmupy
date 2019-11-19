@@ -1,5 +1,6 @@
 import math
 import time
+from typing import Union, Any
 now = time.time
 ever = '€'
 
@@ -16,11 +17,16 @@ class Classy(mini.MiniApplication):
     dynamics: int
 
     def before(self):
+
+        self.key_register = {}
+
         self.player_vessel = Drawable()
         self.player_vessel.pos = (50, 50)
         self.player_vessel.width = 10
         self.player_vessel.height = 20
-        self.dynamics = (0, 0)
+        self.player_vessel_speed = 5
+        self.player_vessel_focus_speed = 2
+        
         self.drawables = []
         self.drawables.append(self.player_vessel)
 
@@ -36,42 +42,37 @@ class Classy(mini.MiniApplication):
         if event.type == MOUSEBUTTONDOWN:
             self.boom()
 
-        if event.type is KEYDOWN:
-            keyname = pygame.key.name(event.key)
-            if keyname in ('up', 'left', 'right', 'down'):
-                print('down dynamic')
-                x, y = self.dynamics
-                x  += {
-                    'up': -1,
-                    'down': 1
-                }.get(keyname, 0)
-                y += {
-                    'left': -1,
-                    'right': 1
-                }.get(event.key, 0)
-                self.dynamics = (x, y)
+        if event.type in (
+            KEYUP, KEYDOWN
+        ):
+            self.key_handler(event)
 
-        
-        if event.type is KEYUP:
-            if keyname in ('up', 'left', 'right', 'down'):
-                print('up dynamic')
-                x, y = self.dynamics
-                x -= {
-                    'up': -1,
-                    'down': 1
-                }.get(keyname, 0)
-                y -= {
-                    'left': -1,
-                    'right': 1
-                }.get(keyname, 0)
-                self.dynamics = (x, y)
+    def key_handler(self, event):
+        keyname = pygame.key.name(event.key)
+        self.key_register[keyname] = self.key_register[event.key] = event.type == KEYDOWN
+        print(self.key_register)
 
+    def keypressed(self, codename: Union[int, str], default: Any = 0) -> int:
+        return self.key_register.get(codename, default)
 
     def update(self):
-        # Player vessel dynamics
-        if sum(self.dynamics) != 0:
-            print(self.dynamics)
-            self.player_vessel >> self.dynamics
+        
+        # Compute player vessel dynamics
+        player_vessel_dynamics = (
+            self.keypressed('right', 0) - self.keypressed('left', 0),
+            self.keypressed('down', 0) - self.keypressed('up', 0),
+        )
+
+        player_vessel_speed = self.player_vessel_speed
+
+        if self.keypressed('left shift'):
+            player_vessel_speed = self.player_vessel_focus_speed
+
+        player_vessel_dynamics = tuple(
+            v * player_vessel_speed for v in player_vessel_dynamics
+        )
+
+        self.player_vessel >> player_vessel_dynamics
 
     def boom(self):
         # Create X projectiles

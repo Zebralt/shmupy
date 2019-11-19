@@ -57,6 +57,8 @@ class MiniApplication:
         
         pygame.init()
 
+        pygame.font.init()
+
         pygame.key.set_repeat(
             self.settings.key_repeat.delay,
             self.settings.key_repeat.frequency
